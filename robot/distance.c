@@ -8,8 +8,10 @@
 #include "display.h"
 #include "../pill.h"
 
-// MODE: INT | IC | IC+DMA
-#define MODE				IC
+#define MODE_INT			1
+#define MODE_IC				2
+#define MODE_ICDMA			3
+#define MODE				MODE_IC
 
 #define DIST_PORT_CLOCK		RCC_GPIOA
 #define DIST_PORT			GPIOA
@@ -21,7 +23,7 @@
 static volatile uint32_t distance = 0;
 static volatile uint32_t dist_pulse = 0;
 
-#if MODE == INT
+#if MODE == MODE_INT
 #define FALLING	0
 #define RISING	1
 uint16_t exti_direction = FALLING;
@@ -50,7 +52,7 @@ void setup_distance_measurements(void) {
 	
 	timer_set_prescaler(DIST_TIMER, 71);	// Period = 1µs
 	
-#if MODE == INT
+#if MODE == MODE_INT
 	nvic_enable_irq(NVIC_EXTI0_IRQ);
 	exti_select_source(EXTI0, DIST_PORT);
 	exti_direction = FALLING;
@@ -58,7 +60,7 @@ void setup_distance_measurements(void) {
 	exti_enable_request(EXTI0);
 #endif
 
-#if MODE == IC
+#if MODE == MODE_IC
 	timer_direction_up(DIST_TIMER);
 	timer_continuous_mode(DIST_TIMER);
 	// Select the active input for TIMx_CCR1: write the CC1S bits to 01 in the TIMx_CCMR1 register (TI1 selected).
@@ -85,17 +87,17 @@ void setup_distance_measurements(void) {
 	timer_enable_counter(DIST_TIMER);
 #endif
 
-#if MODE == IC+DMA
+#if MODE == MODE_ICDMA
 	
 #endif
 }
 
-#if MODE == INT
+#if MODE == MODE_INT
 void exti0_isr(void) {
 	exti_reset_request(EXTI0);
 	
 	if (exti_direction == FALLING) {
-		display_once(timer_get_counter(DIST_TIMER));
+		//display_once(timer_get_counter(DIST_TIMER));
 		timer_disable_counter(DIST_TIMER);
 		timer_set_counter(DIST_TIMER, 0);
 		exti_direction = RISING;
@@ -109,7 +111,7 @@ void exti0_isr(void) {
 }
 #endif
 
-#if MODE == IC
+#if MODE == MODE_IC
 void tim2_isr(void) {
 	if (timer_get_flag(DIST_TIMER, TIM_SR_CC1IF)) {	// CC1IF: Capture/compare 1 interrupt flag
 		timer_clear_flag(DIST_TIMER, TIM_SR_CC1IF);
@@ -125,6 +127,7 @@ void tim2_isr(void) {
 
 		//display_once(timer_get_counter(DIST_TIMER));
 		//display_once(TIM2_CCR2);
+		display_once(distance);
 	}
 	if (timer_get_flag(DIST_TIMER, TIM_SR_UIF)) {
 		timer_clear_flag(DIST_TIMER, TIM_SR_UIF);
