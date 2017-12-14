@@ -19,8 +19,7 @@
 #define DIST_TIMER			TIM2
 
 static volatile uint32_t distance = 0;
-static volatile uint32_t dist_pulse_count = 0;
-static volatile uint32_t dist_period_count = 0;
+static volatile uint32_t dist_pulse = 0;
 
 #if MODE == INT
 #define FALLING	0
@@ -34,6 +33,10 @@ void distance_set_trigger(void) {
 
 void distance_clear_trigger(void) {
 	gpio_clear(DIST_PORT, DIST_TRG_PIN);
+}
+
+uint32_t get_distance(void) {
+	return distance;
 }
 
 void setup_distance_measurements(void) {
@@ -116,9 +119,12 @@ void tim2_isr(void) {
 	}
 	if (timer_get_flag(DIST_TIMER, TIM_SR_CC2IF)) {
 		timer_clear_flag(DIST_TIMER, TIM_SR_CC2IF);
+		
+		dist_pulse = TIM2_CCR2;
+		distance = dist_pulse / 58;
 
 		//display_once(timer_get_counter(DIST_TIMER));
-		display_once(TIM2_CCR2);
+		//display_once(TIM2_CCR2);
 	}
 	if (timer_get_flag(DIST_TIMER, TIM_SR_UIF)) {
 		timer_clear_flag(DIST_TIMER, TIM_SR_UIF);
