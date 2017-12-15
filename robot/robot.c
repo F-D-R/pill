@@ -16,6 +16,7 @@ volatile uint32_t systick_ms = 0;
 
 static volatile uint16_t pwm_left = 1000;
 static volatile uint16_t pwm_right = 2000;
+static volatile uint32_t distance = 0;
 
 void systick_ms_setup(void) {
 	/* 72MHz clock, interrupt for every 72,000 CLKs (1ms). */
@@ -47,6 +48,27 @@ int main(void)
 	setup_pwm_output();
 	
 	while (1) {
+		distance = get_distance();
+		display_once(distance);
+		
+		if (distance < 10) {
+			
+		}
+		else if (distance < 20) {
+			
+		}
+		else if (distance < 50) {
+			
+		}
+		else if (distance < 100) {
+			
+		}
+		else {
+			
+		}
+		
+		set_speed(pwm_left, pwm_right);
+		
 		//__WFI();
 		_NOP();
 	}
