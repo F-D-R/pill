@@ -79,7 +79,6 @@ void setup_distance_measurements(void) {
 	nvic_set_priority(NVIC_TIM2_IRQ, 2);
 	nvic_enable_irq(NVIC_TIM2_IRQ);
 	// Enable the Capture/Compare and Update interrupt requests.
-	//timer_enable_irq(DIST_TIMER, (TIM_DIER_CC1IE | TIM_DIER_CC2IE | TIM_DIER_UIE));
 	timer_enable_irq(DIST_TIMER, TIM_DIER_CC2IE);
 	// Enable the captures: write the CC1E and CC2E bits to ‘1 in the TIMx_CCER register.
 	timer_ic_enable(DIST_TIMER, TIM_IC1);
@@ -113,25 +112,17 @@ void exti0_isr(void) {
 
 #if MODE == MODE_IC
 void tim2_isr(void) {
-	if (timer_get_flag(DIST_TIMER, TIM_SR_CC1IF)) {	// CC1IF: Capture/compare 1 interrupt flag
+	if (timer_get_flag(DIST_TIMER, TIM_SR_CC1IF)) {
 		timer_clear_flag(DIST_TIMER, TIM_SR_CC1IF);
-
-		//display_once(timer_get_counter(DIST_TIMER));
-		//display_once(TIM2_CCR1);
 	}
 	if (timer_get_flag(DIST_TIMER, TIM_SR_CC2IF)) {
 		timer_clear_flag(DIST_TIMER, TIM_SR_CC2IF);
 		
 		dist_pulse = TIM2_CCR2;
 		distance = dist_pulse / 58;
-
-		//display_once(timer_get_counter(DIST_TIMER));
-		//display_once(TIM2_CCR2);
-		display_once(distance);
 	}
 	if (timer_get_flag(DIST_TIMER, TIM_SR_UIF)) {
 		timer_clear_flag(DIST_TIMER, TIM_SR_UIF);
-		// FIXME clear overflow interrupt but what else ?
 	}
 }
 #endif
