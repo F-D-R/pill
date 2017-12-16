@@ -15,11 +15,6 @@
 #define _RND_BOOL() (systick_ms % 2 == 0)
 
 volatile uint32_t systick_ms = 0;
-
-#if 0
-static volatile uint16_t pwm_left = 1000;
-static volatile uint16_t pwm_right = 2000;
-#endif
 static volatile uint32_t distance = 0;
 
 void systick_ms_setup(void) {
@@ -103,21 +98,4 @@ void sys_tick_handler(void) {
 	
 	// Display a result in normal form by blinking the LED
 	display();
-	
-#if 0
-	static bool up = false;
-	if (systick_ms % 500 == 0) {
-		if (up) {
-			pwm_left += 100;
-			if (pwm_left >= 2200)
-				up = false;
-		}
-		else {
-			pwm_left -= 100;
-			if (pwm_left <= 800)
-				up = true;
-		}
-		set_speed(pwm_left, pwm_right);
-	}
-#endif
 }
