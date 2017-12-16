@@ -1,4 +1,4 @@
-#include <libopencm3/cm3/systick.h>
+#include <stdint.h>
 #include "display.h"
 #include "../pill.h"
 
@@ -43,7 +43,7 @@ uint32_t logarithm10(uint32_t value) {
 }
 
 void display_clear(void) {
-	// Clearing the diplay data array
+	// Clearing the display data array
 	disp_enabled = true;
 	disp_len = 0;
 	int i;
@@ -56,7 +56,7 @@ void display_init(uint32_t value, bool once) {
 	if (disp_busy)
 		return;
 	disp_busy = true;
-	// Clearing the diplay data
+	// Clearing the display data
 	display_clear();
 	// Calculating new display values
 	int i;
