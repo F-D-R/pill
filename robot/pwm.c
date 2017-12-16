@@ -41,7 +41,7 @@ void setup_pwm_output(void) {
 	timer_enable_counter(PWM_OUTPUT_TIMER);
 }
 
-void set_speed(uint16_t left, uint16_t right) {
+void set_pwm_output(uint16_t left, uint16_t right) {
 	timer_set_oc_value(PWM_OUTPUT_TIMER, PWM_OUTPUT_LEFT_OC, left);
 	timer_set_oc_value(PWM_OUTPUT_TIMER, PWM_OUTPUT_RIGHT_OC, right);
 }
