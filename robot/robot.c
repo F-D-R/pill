@@ -8,14 +8,18 @@
 #include "display.h"
 #include "pwm.h"
 #include "distance.h"
+#include "movement.h"
 #include "../pill.h"
 
 #define _NOP() asm volatile ("nop")
+#define _RND_BOOL() (systick_ms % 2 == 0)
 
 volatile uint32_t systick_ms = 0;
 
+#if 0
 static volatile uint16_t pwm_left = 1000;
 static volatile uint16_t pwm_right = 2000;
+#endif
 static volatile uint32_t distance = 0;
 
 void systick_ms_setup(void) {
@@ -52,22 +56,33 @@ int main(void)
 		display_once(distance);
 		
 		if (distance < 10) {
-			
+			stop();
+			if (_RND_BOOL())
+				turn_right(180);
+			else
+				turn_left(180);
+			forward();
 		}
 		else if (distance < 20) {
-			
+			decelerate();
+			if (_RND_BOOL())
+				turn_right(90);
+			else
+				turn_left(90);
 		}
 		else if (distance < 50) {
-			
+			decelerate();
+			if (_RND_BOOL())
+				turn_right(45);
+			else
+				turn_left(45);
 		}
 		else if (distance < 100) {
-			
+			decelerate();
 		}
 		else {
-			
+			accelerate();
 		}
-		
-		set_speed(pwm_left, pwm_right);
 		
 		//__WFI();
 		_NOP();

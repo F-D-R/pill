@@ -6,6 +6,7 @@ OBJS        = robot.o \
 			  display.o \
 			  pwm.o \
 			  distance.o \
+			  movement.o \
 
 DOCS        = README.html \
               addons/README.html \
