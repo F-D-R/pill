@@ -12,7 +12,7 @@
 #include "../pill.h"
 
 #define _NOP() asm volatile ("nop")
-#define _RND_BOOL() (systick_ms % 2 == 0)
+//#define _RND_BOOL() (systick_ms % 2 == 0)
 
 volatile uint32_t systick_ms = 0;
 static volatile uint32_t distance = 0;
@@ -51,26 +51,13 @@ int main(void)
 		display_once(distance);
 		
 		if (distance < 10) {
-			stop();
-			if (_RND_BOOL())
-				turn_right(180);
-			else
-				turn_left(180);
-			forward();
+			stop_and_rnd_turn_and_forward(180);
 		}
 		else if (distance < 20) {
-			decelerate();
-			if (_RND_BOOL())
-				turn_right(90);
-			else
-				turn_left(90);
+			decelerate_and_rnd_turn(90);
 		}
 		else if (distance < 50) {
-			decelerate();
-			if (_RND_BOOL())
-				turn_right(45);
-			else
-				turn_left(45);
+			decelerate_and_rnd_turn(45);
 		}
 		else if (distance < 100) {
 			decelerate();
@@ -78,6 +65,8 @@ int main(void)
 		else {
 			accelerate();
 		}
+		
+		calc_movement();
 		
 		//__WFI();
 		_NOP();

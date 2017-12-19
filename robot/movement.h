@@ -1,7 +1,12 @@
 void stop(void);
+void stop_and_rnd_turn(uint16_t degrees);
+void stop_and_rnd_turn_and_forward(uint16_t degrees);
 void forward(void);
 void backward(void);
 void accelerate(void);
 void decelerate(void);
+void decelerate_and_rnd_turn(uint16_t degrees);
 void turn_left(uint16_t degrees);
 void turn_right(uint16_t degrees);
+void rnd_turn(uint16_t degrees);
+void calc_movement(void);
