@@ -119,7 +119,9 @@ void tim2_isr(void) {
 		timer_clear_flag(DIST_TIMER, TIM_SR_CC2IF);
 		
 		dist_pulse = TIM2_CCR2;
-		distance = dist_pulse / 58;
+		uint32_t tmp = dist_pulse / 58;
+		if (tmp > 2 && tmp < 400)	// Valid range is: 2..400cm
+			distance = tmp;
 	}
 	if (timer_get_flag(DIST_TIMER, TIM_SR_UIF)) {
 		timer_clear_flag(DIST_TIMER, TIM_SR_UIF);
